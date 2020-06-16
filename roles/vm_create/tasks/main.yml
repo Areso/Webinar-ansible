@@ -1,0 +1,82 @@
+---
+
+# print names
+- debug:
+    msg: "{{ inventory_hostname }}"
+
+# list all available regions and check APIs health
+- name: get_keys
+  uri:
+    url: "https://api.digitalocean.com/v2/account/keys"
+    method: GET
+    headers:
+      "Authorization": "Bearer {{ do_token }}"
+    force_basic_auth: yes
+    body_format: json
+    status_code: 200
+  register: account
+  changed_when: 200
+  delegate_to: localhost
+  run_once: True
+  tags:
+    - check_api_health
+
+# create vms
+- name: vm_create
+  uri:
+    url: https://api.digitalocean.com/v2/droplets
+    method: POST
+    headers:
+      "Authorization": "Bearer {{ do_token }}"
+    force_basic_auth: yes
+    body:
+      name: "{{ inventory_hostname }}"
+      region: "blr1"
+      size: "s-1vcpu-1gb"
+      image: "ubuntu-16-04-x64"
+      backups: false
+      tags: ["{{ vm_tag }}"]
+      ssh_keys: "{{ account.json.ssh_keys[0].id }}"
+    body_format: json
+    status_code: 202
+  register: vm_create_result
+  changed_when: 202
+  delegate_to: localhost
+
+# print droplets IDs
+- debug:
+    msg: "{{ vm_create_result.json.droplet.id }}"
+
+- pause:
+    seconds: 30
+
+# get droplets IPs
+- name: vm_get_ip
+  uri:
+    url: "https://api.digitalocean.com/v2/droplets/{{ vm_create_result.json.droplet.id }}"
+    method: GET
+    headers:
+      "Authorization": "Bearer {{ do_token }}"
+    force_basic_auth: yes
+    body_format: json
+    status_code: 200
+  register: vm_get_it
+  changed_when: 200
+  delegate_to: localhost
+
+- name: breakpoint1
+  shell: "echo breakpoint1"
+  delegate_to: localhost
+
+# print network
+- debug:
+    msg: "{{ vm_get_it.json.droplet.networks.v4 }}"
+
+# print IP
+- debug:
+    msg: "{{ vm_get_it.json.droplet.networks.v4[0].ip_address }}"
+
+- name: add_host_to_hosts
+  shell: "echo '{{ vm_get_it.json.droplet.networks.v4[0].ip_address }} {{ inventory_hostname }}' >> /etc/hosts"
+  become: yes
+  delegate_to: localhost

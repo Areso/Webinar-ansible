@@ -1,0 +1,23 @@
+# list all available regions and check APIs health
+- name: get_regions
+  uri:
+    url: "https://api.digitalocean.com/v2/regions"
+    method: GET
+    headers:
+      "Authorization": "Bearer {{ do_token }}"
+    force_basic_auth: yes
+    body_format: json
+    status_code: 200
+  register: regions
+  changed_when: 200
+  delegate_to: localhost
+  run_once: True
+  tags:
+    - check_api_health
+
+- debug:
+    msg: "{{ item.slug }}"
+  run_once: True
+  with_items: "{{ regions.json.regions }}"
+  tags:
+    - check_api_health

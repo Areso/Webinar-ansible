@@ -1,0 +1,50 @@
+---
+
+# list all available droplets
+- name: get_droplets
+  uri:
+    url: "https://api.digitalocean.com/v2/droplets"
+    method: GET
+    headers:
+      "Authorization": "Bearer {{ do_token }}"
+    force_basic_auth: yes
+    body_format: json
+    status_code: 200
+  register: droplets
+  changed_when: 200
+  delegate_to: localhost
+  run_once: True
+  tags:
+    - list_droplets
+
+- debug:
+    msg: "{{ item.name }} "
+  with_items: "{{ droplets.json.droplets }}"
+  tags:
+    - list_droplets
+
+- name: destroy_droplets_by_name
+  uri:
+    url: "https://api.digitalocean.com/v2/droplets/item.name"
+    method: DELETE
+    headers:
+      "Authorization": "Bearer {{ do_token }}"
+    force_basic_auth: yes
+    body_format: json
+    status_code: 204
+  register: droplets
+  changed_when: 204
+  delegate_to: localhost
+  tags:
+    - destoy_droplets_by_name
+
+- name: delete_host_from_hosts
+  lineinfile:
+    path: /etc/hosts
+    state: absent
+    regexp: '^{{ inventory_hostname }}'
+  become: yes
+  delegate_to: localhost
+  tags:
+    - destoy_droplets_by_name
+

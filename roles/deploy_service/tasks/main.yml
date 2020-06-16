@@ -1,0 +1,60 @@
+---
+# first deploy
+- name: mkdir_git
+  file:
+    path: ~/git
+    state: directory
+  when: raction == "first_deploy"
+  tags: debug_skip
+
+- name: git_clone
+  command: "git clone https://{{ gitlab_token_title }}:{{ gitlab_token }}@gitlab.com/{{ gitlab_user }}/{{ gitlab_repo }}.git"
+  args:
+    chdir: ~/git/
+  when: raction == "first_deploy"
+  tags: debug_skip
+
+- name: install_requirements
+  command: "pip install -r requirements.txt"
+  args:
+    chdir: "~/git/{{ gitlab_repo }}"
+  when: raction == "first_deploy"
+  tags: debug_skip
+
+- set_fact: remote_check = ""
+
+- name: git_remote_check
+  command: "git remote update"
+  args:
+    chdir: "~/git/{{ gitlab_repo }}"
+  when: raction == "update_deploy"
+
+- name: git_remote_status
+  command: "git status -uno"
+  args:
+    chdir: "~/git/{{ gitlab_repo }}"
+  register: remote_check
+  when: raction == "update_deploy"
+
+- name: git_pull
+  command: "git pull https://{{ gitlab_token_title }}:{{ gitlab_token }}@gitlab.com/{{ gitlab_user }}/{{ gitlab_repo }}.git"
+  args:
+    chdir: "~/git/{{ gitlab_repo }}"
+  when: raction == "update_deploy" and remote_check is search("behind")
+
+- set_fact: deployed_service_pid = ""
+
+- name: stop_process
+  command: "kill -9 `cat ~/git/{{ gitlab_repo }}/pid`"
+  when: raction == "update_deploy" and remote_check is search("behind")
+
+- name: run_app
+  shell: "gunicorn3 -w 1 -b 0.0.0.0:3000 {{ gitlab_runfile }}:app --daemon -p ~/git/{{ gitlab_repo }}/pid"
+  args:
+    chdir: "~/git/{{ gitlab_repo }}"
+  when: raction == "first_deploy" or remote_check is search("behind")
+  register: run_app
+
+- debug:
+    msg: "{{ run_app }}"
+  when: raction == "first_deploy" or remote_check is search("behind")

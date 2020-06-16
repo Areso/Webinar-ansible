@@ -1,0 +1,7 @@
+---
+- hosts: all
+  gather_facts: False
+  roles:
+    - role: deploy_service
+      vars:
+        raction: "first_deploy"

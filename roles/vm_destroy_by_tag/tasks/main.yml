@@ -1,0 +1,17 @@
+---
+
+- name: destroy_droplets_by_tag
+  uri:
+    url: "https://api.digitalocean.com/v2/droplets?tag_name={{ vm_tag }}"
+    method: DELETE
+    headers:
+      "Authorization": "Bearer {{ do_token }}"
+    force_basic_auth: yes
+    body_format: json
+    status_code: 204
+  register: droplets
+  changed_when: 200
+  delegate_to: localhost
+  tags:
+    - destoy_droplets_by_tag
+

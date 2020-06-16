@@ -1,0 +1,57 @@
+---
+
+# print names
+- debug:
+    msg: "{{ inventory_hostname }}"
+
+- name: update_all
+  command: "apt-get update"
+  become: yes
+  tags:
+    - update
+
+- name: install_expect
+  package:
+    name: "expect"
+    state: latest
+  tags:
+    - install
+    - install_expect
+
+# DEBIAN_FRONTEND=noninteractive and -q key allows you to skip the following dialogue:
+# A new version of /boot/grub/menu.lst is available, but the version
+#     │ installed currently has been locally modified.
+# You may run into it on DO (no official resolution
+# see https://www.digitalocean.com/community/questions/ubuntu-new-boot-grub-menu-lst-after-apt-get-upgrade
+# or on AWS
+
+- name: upgrade_all
+  shell: "DEBIAN_FRONTEND=noninteractive apt-get upgrade -yq"
+  become: yes
+  tags:
+    - update
+    - upgrade
+
+- name: install_pip
+  package:
+    name: "python3-pip"
+    state: latest
+  tags:
+    - update
+    - update_pip
+
+- name: update_pip
+  command: "python3 -m pip install --upgrade pip"
+  tags:
+    - update
+    - update_pip
+
+- name: install_gunicorn
+  package:
+    name: "gunicorn3"
+    state: latest
+  tags:
+    - install
+    - install_unicorn3
+
+
