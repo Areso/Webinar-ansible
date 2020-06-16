@@ -45,7 +45,7 @@
 - set_fact: deployed_service_pid = ""
 
 - name: stop_process
-  shell: "kill `cat ~/git/{{ gitlab_repo }}/pid`"
+  shell: "kill -9 $(cat ~/git/{{ gitlab_repo }}/pid)"
   when: raction == "update_deploy" and remote_check is search("behind")
   tags:
     - stop_process
