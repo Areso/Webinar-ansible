@@ -2,4 +2,4 @@
 - hosts: all
   gather_facts: False
   roles:
-    - vm_destroy
+    - vm_destroy_by_tag
