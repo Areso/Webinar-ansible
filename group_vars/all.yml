@@ -10,7 +10,6 @@ do_token: !vault |
           64356335306163323263386463313363646435313937303233646539383833383934623739343932
           33646266363361623861363637346330363539613339653966326635613832306165613163373337
           65356337633463366262
-vm_tag: "webinar1"
 
 gitlab_token: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -23,3 +22,16 @@ gitlab_token_title: "gitlab-token1"
 gitlab_user: "Areso"
 gitlab_repo: "simple-api"
 gitlab_runfile: "simple_api"
+
+# blr1 - Bangalore, tor1 - Torronto, sfo3 - San-Francisco
+region_slug: "nyc3"
+
+images:
+  ub1804: "ubuntu-18-04-x64"
+  ub1604: "ubuntu-16-04-x64"
+  ovpn18: "openvpn-18-04"
+
+sizes:
+  small: "s-1vcpu-1gb"
+  medium: "s-1vcpu-2gb"
+  big: "s-2vcpu-4gb"

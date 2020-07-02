@@ -15,3 +15,12 @@
   tags:
     - destoy_droplets_by_tag
 
+- name: delete_host_from_hosts
+  lineinfile:
+    path: /etc/hosts
+    state: absent
+    regexp: '{{ vm_tag }}'
+  become: yes
+  delegate_to: localhost
+  tags:
+    - destoy_droplets_by_name

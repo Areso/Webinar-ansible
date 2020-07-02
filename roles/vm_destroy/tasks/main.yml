@@ -1,5 +1,4 @@
 ---
-
 # list all available droplets
 - name: get_droplets
   uri:
@@ -18,14 +17,17 @@
     - list_droplets
 
 - debug:
-    msg: "{{ item.name }} "
+    msg:
+      - "{{ item.name }}"
+      - "{{ item.id }}"
+    verbosity: 2
   with_items: "{{ droplets.json.droplets }}"
   tags:
     - list_droplets
 
 - name: destroy_droplets_by_name
   uri:
-    url: "https://api.digitalocean.com/v2/droplets/item.name"
+    url: "https://api.digitalocean.com/v2/droplets/{{ item.id }}"
     method: DELETE
     headers:
       "Authorization": "Bearer {{ do_token }}"
@@ -35,6 +37,7 @@
   register: droplets
   changed_when: 204
   delegate_to: localhost
+  with_items: "{{ droplets.json.droplets }}"
   tags:
     - destoy_droplets_by_name
 
@@ -42,9 +45,10 @@
   lineinfile:
     path: /etc/hosts
     state: absent
-    regexp: '^{{ inventory_hostname }}'
+    regexp: '{{ inventory_hostname }}'
   become: yes
   delegate_to: localhost
   tags:
     - destoy_droplets_by_name
+    - delete_host_from_hosts
 

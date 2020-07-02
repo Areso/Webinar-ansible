@@ -1,5 +1,7 @@
 ---
-- hosts: all
+- hosts: localhost
   gather_facts: False
   roles:
-    - vm_destroy_by_tag
+    - role: vm_destroy_by_tag
+      vars:
+        vm_tag: "webinar1"

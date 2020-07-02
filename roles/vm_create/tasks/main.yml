@@ -4,6 +4,18 @@
 - debug:
     msg: "{{ inventory_hostname }}"
 
+# get the local username under which the playbook is running
+- name: get_the_username
+  become: False
+  local_action: command whoami
+  register: local_username
+  delegate_to: localhost
+
+# delete records from the user's known_hosts
+- name: delete_records_from_know_hosts
+  shell: "ssh-keygen -f '/home/{{ local_username.stdout }}/.ssh/known_hosts' -R {{ inventory_hostname }}"
+  delegate_to: localhost
+
 # list all available regions and check APIs health
 - name: get_keys
   uri:
@@ -31,9 +43,9 @@
     force_basic_auth: yes
     body:
       name: "{{ inventory_hostname }}"
-      region: "blr1"
-      size: "s-1vcpu-1gb"
-      image: "ubuntu-16-04-x64"
+      region: "{{ region_slug }}"
+      size: "{{ size }}"
+      image: "{{ image }}"
       backups: false
       tags: ["{{ vm_tag }}"]
       ssh_keys: "{{ account.json.ssh_keys[0].id }}"
@@ -77,6 +89,6 @@
     msg: "{{ vm_get_it.json.droplet.networks.v4[0].ip_address }}"
 
 - name: add_host_to_hosts
-  shell: "echo '{{ vm_get_it.json.droplet.networks.v4[0].ip_address }} {{ inventory_hostname }}' >> /etc/hosts"
+  shell: "echo '{{ vm_get_it.json.droplet.networks.v4[0].ip_address }} {{ inventory_hostname }} # {{ vm_tag }}' >> /etc/hosts"
   become: yes
   delegate_to: localhost
