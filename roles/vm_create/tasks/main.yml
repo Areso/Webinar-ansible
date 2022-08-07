@@ -15,6 +15,7 @@
 - name: delete_records_from_know_hosts
   shell: "ssh-keygen -f '/home/{{ local_username.stdout }}/.ssh/known_hosts' -R {{ inventory_hostname }}"
   delegate_to: localhost
+  ignore_errors: True
 
 # list all available regions and check APIs health
 - name: get_keys
