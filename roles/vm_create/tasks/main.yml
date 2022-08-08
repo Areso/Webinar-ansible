@@ -61,7 +61,7 @@
     msg: "{{ vm_create_result.json.droplet.id }}"
 
 - pause:
-    seconds: 30
+    seconds: 40
 
 # get droplets IPs
 - name: vm_get_ip
@@ -80,6 +80,11 @@
 - name: breakpoint1
   shell: "echo breakpoint1"
   delegate_to: localhost
+
+# print all the params of the newly created VM
+- name: print params of # print network
+  debug:
+    msg: "{{ vm_get_it.json }}"
 
 # print network
 - debug:
