@@ -106,5 +106,5 @@
   delegate_to: localhost
 
 - name: add_host_to_known_hosts
-  shell: "ssh-keyscan -t rsa @targethost >> ~/.ssh/known_hosts"
+  shell: "ssh-keyscan -t rsa @{{ inventory_hostname }} >> ~/.ssh/known_hosts"
   delegate_to: localhost
