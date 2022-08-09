@@ -106,5 +106,17 @@
   delegate_to: localhost
 
 - name: add_host_to_known_hosts
-  shell: "ssh-keyscan -t rsa {{ inventory_hostname }} >> ~/.ssh/known_hosts"
+  shell: "ssh-keyscan -t rsa {{ inventory_hostname }} >> ~/.ssh/known_hosts -v"
   delegate_to: localhost
+  register: add_host
+
+- name: add_host_to_known_hosts_rc
+  shell: "echo $?"
+  delegate_to: localhost
+  register: add_host_rc
+
+- name: show_result_of_adding_host
+  debug:
+    msg: 
+      - "{{ add_host }}"
+      - "{{ add_host_rc }}"
