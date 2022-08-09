@@ -17,6 +17,12 @@
   delegate_to: localhost
   ignore_errors: True
 
+# delete records from the user's known_hosts
+- name: delete_records_from_know_hosts_no_path
+  shell: "ssh-keygen -R {{ inventory_hostname }}"
+  delegate_to: localhost
+  ignore_errors: True
+
 # list all available regions and check APIs health
 - name: get_keys
   uri:
@@ -97,4 +103,8 @@
 - name: add_host_to_hosts
   shell: "echo '{{ vm_get_it.json.droplet.networks.v4[0].ip_address }} {{ inventory_hostname }} # {{ vm_tag }}' >> /etc/hosts"
   become: yes
+  delegate_to: localhost
+
+- name: add_host_to_known_hosts
+  shell: "ssh-keyscan -t rsa @targethost >> ~/.ssh/known_hosts"
   delegate_to: localhost
