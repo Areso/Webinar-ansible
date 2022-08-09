@@ -105,6 +105,9 @@
   become: yes
   delegate_to: localhost
 
+- pause:
+    seconds: 3
+
 - name: add_host_to_known_hosts
   shell: "ssh-keyscan -t rsa {{ inventory_hostname }} >> ~/.ssh/known_hosts -v"
   delegate_to: localhost
