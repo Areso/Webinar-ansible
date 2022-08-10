@@ -105,6 +105,15 @@
   become: yes
   delegate_to: localhost
 
+- name: get_etc_hosts
+  shell: "cat /etc/hosts"
+  delegate_to: localhost
+  register: etc_hosts
+
+- name: show_etc_hosts
+  debug:
+    msg: "{{ etc_hosts }}"
+
 - pause:
     seconds: 4
 
