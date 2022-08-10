@@ -115,7 +115,7 @@
     msg: "{{ etc_hosts }}"
 
 - pause:
-    seconds: 4
+    seconds: 5
 
 - name: add_host_to_known_hosts
   shell: "ssh-keyscan -t rsa {{ inventory_hostname }} >> ~/.ssh/known_hosts -v"
