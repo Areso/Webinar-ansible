@@ -24,8 +24,16 @@ gitlab_repo: "simple-api"
 gitlab_runfile: "simple_api"
 
 # blr1 - Bangalore, tor1 - Torronto, sfo3 - San-Francisco
-region_slug: "nyc3"
-
+region:
+  nyc:
+    nyc1: "nyc1"
+    nyc2: "nyc2"
+    nyc3: "nyc3"
+  ams:
+    ams2: "ams2"
+    ams3: "ams3"
+  fra:
+    fra1: "fra1"
 images:
   ub1804: "ubuntu-18-04-x64"
   ub1604: "ubuntu-16-04-x64"
