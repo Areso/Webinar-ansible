@@ -32,7 +32,7 @@ images:
   ovpn18: "openvpn-18-04"
 
 sizes:
-  tiny: "512mb"
+  tiny: "s-1vcpu-512mb-10gb"
   small: "s-1vcpu-1gb"
   medium: "s-1vcpu-2gb"
   big: "s-2vcpu-4gb"
