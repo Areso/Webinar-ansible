@@ -35,6 +35,8 @@ region:
   fra:
     fra1: "fra1"
 
+region_slug: region.nyc.nyc1
+
 images:
   ub1804: "ubuntu-18-04-x64"
   ub1604: "ubuntu-16-04-x64"
