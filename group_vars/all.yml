@@ -27,10 +27,10 @@ gitlab_runfile: "simple_api"
 region:
   nyc:
     nyc1: "nyc1"
-    nyc2: "nyc2"
+    nyc2: "nyc2" # this one doesn't support tiny flavor
     nyc3: "nyc3" # this one doesn't support tiny flavor
   ams:
-    ams2: "ams2"
+    ams2: "ams2" # this one doesn't support tiny flavor
     ams3: "ams3"
   fra:
     fra1: "fra1"
