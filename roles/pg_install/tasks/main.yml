@@ -27,5 +27,5 @@
 
 - name: intall_pg
   apt:
-    name: postgresql
+    name: postgresql-13
     state: latest
