@@ -25,6 +25,10 @@
   shell: "wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -"
   become: yes
 
+- name: apt_update
+  shell: "apt update"
+  become: yes
+
 - name: intall_pg
   apt:
     name: postgresql-13
