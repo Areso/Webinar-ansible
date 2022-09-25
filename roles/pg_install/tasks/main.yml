@@ -1,0 +1,31 @@
+---
+
+# print names
+- debug:
+    msg: "{{ inventory_hostname }}"
+
+- name: update_all
+  command: "apt-get update"
+  become: yes
+  tags:
+    - update
+
+- name: install_sudo
+  command: "apt install sudo"
+  become: yes
+  tags:
+    - sudo
+
+- name: add_sources
+  shell: "sudo sh -c 'echo \"deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main\" > /etc/apt/sources.list.d/pgdg.list'"
+  become: yes
+  tags: reposource
+
+- name: add_key
+  shell: "wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -"
+  become: yes
+
+- name: intall_pg
+  apt:
+    name: postgresql
+    state: latest

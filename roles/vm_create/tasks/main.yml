@@ -121,6 +121,9 @@
   shell: "ssh-keyscan -t rsa {{ inventory_hostname }} >> ~/.ssh/known_hosts"
   delegate_to: localhost
   register: add_host
+  retries: 5
+  delay: 30
+  until: add_host.rc == 0
 
 - name: add_host_to_known_hosts_rc
   shell: "echo $?"
